@@ -14,9 +14,14 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	fmt.Printf("hello CLI")
+
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			http.ServeFile(w, r, "index.html")
+		})
 
 	fmt.Printf("Serveur lancé sur le port %s...\n", port)
+
+
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal("Erreur serveur : ", err)
 	}
