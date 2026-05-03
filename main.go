@@ -21,7 +21,7 @@ func main() {
 			http.ServeFile(w, r, "index.html")
 			http.HandleFunc("/redirect", backGo.redirectHandler)
 			http.HandleFunc("/", backGo.homeHandler)
-			http.HandleFunc("/login", backGo.homeHandler2)
+			http.HandleFunc("/account", backGo.homeHandler2)
 			http.HandleFunc("/aboutus", backGo.homeHandler3)
 			http.HandleFunc("/subject", backGo.homeHandler4)
 			http.HandleFunc("/admin", backGo.homeHandler4)

@@ -22,6 +22,8 @@ func redirectHandler(w http.ResponseWriter, r *http.Request) {
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 
+
+
 	tpl, err := template.ParseFiles(filepath.Join(templateDir, "index.html"))
 	if err != nil {
 		http.Error(w, err.Error(), 500)
@@ -32,6 +34,8 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func homeHandler1(w http.ResponseWriter, r *http.Request) {
+
+	
 
 	tpl, err := template.ParseFiles(filepath.Join(templateDir, "page/loginPage.html"))
 	if err != nil {

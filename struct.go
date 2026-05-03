@@ -1,10 +1,14 @@
 package main
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	id 				uint    	`gorm:"primaryKey;column:id"`
 	UserName      	string  	`gorm:"column:UserName"`
+	FirstName      	string  	`gorm:"column:firstName"`
+	LastName      	string  	`gorm:"column:lastName"`
 	UserMail      	string  	`gorm:"column:UserMail"`
 	UserMdp      	string  	`gorm:"column:UserMdp"`
 	UserStatus      string  	`gorm:"column:UserStatus"`
@@ -15,9 +19,9 @@ type Post struct {
 	idUser 			uint  		`gorm:"column:idUser"`
 	User 			User 		`gorm:"foreignKey:idUser"`
 	PostMessage 	string  	`gorm:"column:PostMessage"`
-	PostImg     	string  	`gorm:"column:PostImg"`
+	PostImg     	*string  	`gorm:"column:PostImg"`
 	PostDate     	time.Time  	`gorm:"column:PostDate"`
-	PostCommentary  []uint  	`gorm:"column:PostCommentary"`
+	PostCommentary  *[]uint  	`gorm:"column:PostCommentary"`
 }
 
 type Commentary struct {
@@ -26,4 +30,15 @@ type Commentary struct {
 	User 			User 		`gorm:"foreignKey:UserComId"`
 	Message     	string  	`gorm:"column:ComMessage"`
 	Image     		string  	`gorm:"column:image"`
+}
+
+type PostPage struct {
+	subject Post
+	answer Commentary
+}
+
+type AdminBoard struct {
+	Userboad User
+	PostBoard Post
+	CommentaryBoard Commentary
 }
