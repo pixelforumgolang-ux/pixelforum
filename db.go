@@ -3,6 +3,8 @@ package main
 import (
 	"gorm.io/driver/postgres"
   	"gorm.io/gorm"
+	"os"
+	"log"
 )
 
 var db *gorm.DB

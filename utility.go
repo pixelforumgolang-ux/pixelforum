@@ -12,19 +12,15 @@ func Search(){
 
 }
 
-func recupCommentary(){
-
+func MakeStructPostPage(id uint, subject PostPage){
+	//readPost(id,subject.subjectPost)
+	//readCommentary(subject.subjectPost.postCommentary, subject.subjectCommentary)
 }
 
-func CreateSpecificPost(){
-	
+
+func MakeStructAdminPage(everything AdminPage){
+
+	//readUserAll(everything.everyUser)
+	//readPostAll(everything.everyPost)
+	//readCommentaryAll(everything.everyCommentary)
 }
-
-func MakeStructPostPage(){
-
-}
-
-func MakeStructAdminPage(){
-	
-}
-

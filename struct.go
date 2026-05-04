@@ -19,9 +19,9 @@ type Post struct {
 	idUser 			uint  		`gorm:"column:idUser"`
 	User 			User 		`gorm:"foreignKey:idUser"`
 	PostMessage 	string  	`gorm:"column:PostMessage"`
-	PostImg     	*string  	`gorm:"column:PostImg"`
+	PostImg     	string  	`gorm:"column:PostImg"`
 	PostDate     	time.Time  	`gorm:"column:PostDate"`
-	PostCommentary  *[]uint  	`gorm:"column:PostCommentary"`
+	PostCommentary  []uint  	`gorm:"column:PostCommentary"`
 }
 
 type Commentary struct {
@@ -30,15 +30,16 @@ type Commentary struct {
 	User 			User 		`gorm:"foreignKey:UserComId"`
 	Message     	string  	`gorm:"column:ComMessage"`
 	Image     		string  	`gorm:"column:image"`
+	ComDate     	time.Time  	`gorm:"column:ComDate"`
 }
 
 type PostPage struct {
-	subject Post
-	answer Commentary
+	subjectPost Post
+	subjectCommentary []Commentary
 }
 
-type AdminBoard struct {
-	Userboad User
-	PostBoard Post
-	CommentaryBoard Commentary
+type AdminPage struct {
+	everyUser []User
+	everyPost []Post
+	everyCommentary []Commentary
 }
