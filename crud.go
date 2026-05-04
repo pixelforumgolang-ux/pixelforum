@@ -81,7 +81,12 @@ func readUser(id uint, theUser User){
 }
 
 func readPost(id uint, thePost Post){
-	result := db.First(&thePost)
+	
+	if (id == -1){
+		result := db.Find(&thePost)
+	} else {
+		result := db.First(&thePost)
+	}
 }
 
 func readCommentary(idList []uint, CommentaryList []Commentary){
