@@ -22,7 +22,8 @@ func redirectHandler(w http.ResponseWriter, r *http.Request) {
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 
-
+	var listePost Post
+	readPost(-1,listePost)
 
 	tpl, err := template.ParseFiles(filepath.Join(templateDir, "index.html"))
 	if err != nil {
@@ -30,21 +31,21 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tpl.Execute(w, nil)
+	tpl.Execute(w, listePost)
 }
 
 func homeHandler1(w http.ResponseWriter, r *http.Request) {
-
+	var oneUser User
+	oneId := 1
+	readUser(id, oneUser)
 	
-
 	tpl, err := template.ParseFiles(filepath.Join(templateDir, "page/loginPage.html"))
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	
-	tpl.Execute(w, nil)
+	tpl.Execute(w, oneUser)
 }
 
 func homeHandler2(w http.ResponseWriter, r *http.Request) {
@@ -59,23 +60,24 @@ func homeHandler2(w http.ResponseWriter, r *http.Request) {
 }
 
 func homeHandler3(w http.ResponseWriter, r *http.Request) {
-
+	var subject PostBoard
+	MakeStructPostPage(subject)
 	tpl, err := template.ParseFiles(filepath.Join(templateDir, "page/subject.html"))
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	tpl.Execute(w, nil)
+	tpl.Execute(w, subject)
 }
 
 func homeHandler4(w http.ResponseWriter, r *http.Request) {
-
+	var alltab AdminBoard
+	MakeStructAdminPage(alltab)
 	tpl, err := template.ParseFiles(filepath.Join(templateDir, "page/adminPage.html"))
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-
-	tpl.Execute(w, nil)
+	tpl.Execute(w, alltab)
 }
