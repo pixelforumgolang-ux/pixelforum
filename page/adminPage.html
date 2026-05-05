@@ -1,15 +1,171 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="forum de pixel art" />
-        <title>PixelForum</title>
-        <link rel="stylesheet" href="communStyle.css" />
-    </head>
-    <body>
-        <p class="titre">bienvenue sur PixelForum</p>
-        <p>coucou les copinous</p>
-        <font class="titre" size="+3">titre</font>
-    </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - PixelForum</title>
+  <link rel="stylesheet" href="communStyle.css">
+</head>
+<body class="admin-page">
+  <header>
+    <div class="container">
+      <div class="navbar">
+        <a href="/" class="logo">🎨 PixelForum</a>
+        <h1 class="site-title">PixelForum</h1>
+        <ul>
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/subject">Posts</a></li>
+          <li><a href="/account">Compte</a></li>
+          <li><a href="/aboutus">À propos</a></li>
+          <li><a href="/admin">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <h2 style="color: var(--primary-color); font-size: 2rem; margin-bottom: 40px;">Panneau d'administration</h2>
+      
+      <!-- Dashboard Stats -->
+      <div class="stats" style="margin-bottom: 40px;">
+        <div class="stat-box">
+          <div class="stat-number">{{ len .Userboad }}</div>
+          <div class="stat-label">Utilisateurs</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">{{ len .PostBoard }}</div>
+          <div class="stat-label">Posts</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">{{ len .CommentaryBoard }}</div>
+          <div class="stat-label">Commentaires</div>
+        </div>
+      </div>
+
+      <!-- Utilisateurs Section -->
+      <div class="card" style="margin-bottom: 40px;">
+        <h3>Gestion des Utilisateurs</h3>
+        <div style="overflow-x: auto; margin-top: 20px;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Nom d'utilisateur</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{ range .Userboad }}
+              <tr>
+                <td><strong>{{ .UserName }}</strong></td>
+                <td>{{ .FirstName }}</td>
+                <td>{{ .LastName }}</td>
+                <td>{{ .UserMail }}</td>
+                <td>
+                  <span style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem;">
+                    {{ .UserStatus }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-buttons">
+                    <a href="/admin/user/{{ .id }}" class="btn btn-sm btn-info">Voir</a>
+                    <button class="btn btn-sm btn-danger">Supprimer</button>
+                  </div>
+                </td>
+              </tr>
+              {{ end }}
+            </tbody>
+          </table>
+        </div>
+        {{ if not .Userboad }}
+        <p style="color: var(--text-light); opacity: 0.7; text-align: center; padding: 20px;">Aucun utilisateur</p>
+        {{ end }}
+      </div>
+
+      <!-- Posts Section -->
+      <div class="card" style="margin-bottom: 40px;">
+        <h3>Gestion des Posts</h3>
+        <div style="overflow-x: auto; margin-top: 20px;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Auteur</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Commentaires</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{ range .PostBoard }}
+              <tr>
+                <td><strong>#{{ .PostId }}</strong></td>
+                <td>{{ .User.UserName }}</td>
+                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ .PostMessage }}</td>
+                <td>{{ .PostDate.Format "02 Jan 2006" }}</td>
+                <td style="text-align: center;">{{ len .PostCommentary }}</td>
+                <td>
+                  <div class="action-buttons">
+                    <a href="/admin/post/{{ .PostId }}" class="btn btn-sm btn-info">Voir</a>
+                    <button class="btn btn-sm btn-danger">Supprimer</button>
+                  </div>
+                </td>
+              </tr>
+              {{ end }}
+            </tbody>
+          </table>
+        </div>
+        {{ if not .PostBoard }}
+        <p style="color: var(--text-light); opacity: 0.7; text-align: center; padding: 20px;">Aucun post</p>
+        {{ end }}
+      </div>
+
+      <!-- Commentaires Section -->
+      <div class="card">
+        <h3>Gestion des Commentaires</h3>
+        <div style="overflow-x: auto; margin-top: 20px;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Auteur</th>
+                <th>Message</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{ range .CommentaryBoard }}
+              <tr>
+                <td><strong>#{{ .Commentary_id }}</strong></td>
+                <td>{{ .User.UserName }}</td>
+                <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ .Message }}</td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn btn-sm btn-info">Modérer</button>
+                    <button class="btn btn-sm btn-danger">Supprimer</button>
+                  </div>
+                </td>
+              </tr>
+              {{ end }}
+            </tbody>
+          </table>
+        </div>
+        {{ if not .CommentaryBoard }}
+        <p style="color: var(--text-light); opacity: 0.7; text-align: center; padding: 20px;">Aucun commentaire</p>
+        {{ end }}
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 PixelForum - Tous les droits réservés</p>
+    </div>
+  </footer>
+</body>
 </html>

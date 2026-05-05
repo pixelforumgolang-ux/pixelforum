@@ -1,15 +1,81 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="forum de pixel art" />
-        <title>PixelForum</title>
-        <link rel="stylesheet" href="communStyle.css" />
-    </head>
-    <body>
-        <p class="titre">bienvenue sur PixelForum</p>
-        <p>coucou les copinous</p>
-        <font class="titre" size="+3">titre</font>
-    </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Posts - PixelForum</title>
+  <link rel="stylesheet" href="communStyle.css">
+</head>
+<body class="posts-page">
+  <header>
+    <div class="container">
+      <div class="navbar">
+        <a href="/" class="logo">🎨 PixelForum</a>
+        <h1 class="site-title">PixelForum</h1>
+        <ul>
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/subject">Posts</a></li>
+          <li><a href="/account">Compte</a></li>
+          <li><a href="/aboutus">À propos</a></li>
+          <li><a href="/admin">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+        <h2 style="color: var(--primary-color); font-size: 2rem;">Discussions</h2>
+        <a href="/create" class="cta-button">+ Nouveau Post</a>
+      </div>
+
+      <div class="posts-container">
+        {{ range . }}
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-author">
+              <div class="author-avatar">{{ substr .User.UserName 0 1 }}</div>
+              <div>
+                <div class="author-name">{{ .User.UserName }}</div>
+                <div class="post-date">{{ .PostDate.Format "02 Jan 2006 15:04" }}</div>
+              </div>
+            </div>
+          </div>
+          
+          {{ if .PostImg }}
+          <img src="{{ .PostImg }}" alt="Post image" class="post-image">
+          {{ end }}
+          
+          <div class="post-content">
+            {{ .PostMessage }}
+          </div>
+          
+          <div class="post-footer">
+            <div class="post-meta">
+              <span>💬 {{ len .PostCommentary }} commentaires</span>
+              <span>❤️ J'aime</span>
+            </div>
+            <a href="/post/{{ .PostId }}" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Voir →</a>
+          </div>
+        </div>
+        {{ end }}
+      </div>
+
+      {{ if not . }}
+      <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
+        <h3 style="margin-bottom: 20px;">Aucun post pour le moment</h3>
+        <p>Soyez le premier à partager quelque chose!</p>
+        <a href="/create" class="cta-button" style="margin-top: 20px;">Créer un post</a>
+      </div>
+      {{ end }}
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 PixelForum - Tous les droits réservés</p>
+    </div>
+  </footer>
+</body>
 </html>

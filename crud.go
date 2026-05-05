@@ -12,7 +12,7 @@ import (
 
 //CREATE RUD
 
-func createUser(userName string, userMail string, userMdp string, lastName string, firstName string){
+func createUser(userName string, firstName string, lastName string, userMail string, userMdp string,  ){
 	
 	if (userName == "" || userMail == "" || userMdp == "" || lastName == "" || firstName  == "" ){
 		fmt.Println("pas de message")
@@ -100,7 +100,7 @@ func readPost(id uint, thePost Post){
 		}
 }
 
-func readPostAll(thePost Post){
+func readPostAll(thePost []Post){
 	result := db.Find(&thePost)
 
 		if ( result.Error != nil){
@@ -130,7 +130,7 @@ func readCommentaryAll(CommentaryList []Commentary){
 
 //CR UPDATE D
 
-func updateUser(id uint, userName string, userMail string, userMdp string, userStatus string, lastName string, firstName string){
+func updateUser(id uint, userName string, firstName string, lastName string, userMail string, userMdp string, userStatus string){
 	dataUser := User{UserName: userName, 
 			FirstName : firstName, 
 			LastName : lastName, 

@@ -8,6 +8,9 @@ import (
 
 )
 
+var oneUser User
+var login bool = false
+
 func redirectHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		page := r.FormValue("page")
@@ -19,9 +22,9 @@ func redirectHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
+func homeHandlerIndex(w http.ResponseWriter, r *http.Request) {
 
-	var listePost Post
+	var listePost []Post
 	readPostAll(listePost)
 
 	tpl, err := template.ParseFiles(filepath.Join(templateDir, "index.html"))
@@ -33,21 +36,63 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	tpl.Execute(w, listePost)
 }
 
-func homeHandler1(w http.ResponseWriter, r *http.Request) {
-	var oneUser User
-	var oneId uint = 10
-	readUser(oneId, oneUser)
+func homeHandlerLogin(w http.ResponseWriter, r *http.Request) {
 	
-	tpl, err := template.ParseFiles(filepath.Join(templateDir, "page/loginPage.html"))
+	var verif bool = verifLoginPage(r.FormValue("mail"),r.FormValue("mdp"))
+
+	if (verif){
+		result := db.Where("UserMdp = ?", r.FormValue("mdp")).First(&theUser)
+		login = true
+	} else {
+		fmt.Println("information érroné")
+	}
+
+	if (verif){
+		createUser(r.FormValue("userName"),r.FormValue("firstName"),r.FormValue("lastName"),r.FormValue("userMail"),r.FormValue("userMdp"))
+	} else {
+		fmt.Println("information érroné")
+	}
+	
+
+	tpl, err := template.ParseFiles(filepath.Join(templateDir, "page/login.html"))
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	tpl.Execute(w, oneUser)
+	tpl.Execute(w, nil)
 }
 
-func homeHandler2(w http.ResponseWriter, r *http.Request) {
+func homeHandlerUser(w http.ResponseWriter, r *http.Request) {
+
+	if (login){
+		switch r.FormValue("action") {
+			case "disconnect":
+				disconnect(theUser.id)
+				login = false
+			case "update":
+				updateUser(theUser.id,r.FormValue("userName"), r.FormValue("firstName"),r.FormValue("lastName"),r.FormValue("userMail"),r.FormValue("userMdp"), "client")
+			case "delete":
+				deleteUser(theUser.id)
+		}
+	}
+	
+	
+	tpl, err := template.ParseFiles(filepath.Join(templateDir, "page/account.html"))
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	if (theUser == nil) {
+		tpl.Execute(w, nil)
+	} else {
+		tpl.Execute(w, theUser)
+	}
+	
+}
+
+func homeHandlerAbout(w http.ResponseWriter, r *http.Request) {
 
 	tpl, err := template.ParseFiles(filepath.Join(templateDir, "page/aboutUsPage.html"))
 	if err != nil {
@@ -58,7 +103,7 @@ func homeHandler2(w http.ResponseWriter, r *http.Request) {
 	tpl.Execute(w, nil)
 }
 
-func homeHandler3(w http.ResponseWriter, r *http.Request) {
+func homeHandlerPost(w http.ResponseWriter, r *http.Request) {
 	var subject PostPage
 	var id uint = 0
 	MakeStructPostPage(id, subject)
@@ -71,7 +116,7 @@ func homeHandler3(w http.ResponseWriter, r *http.Request) {
 	tpl.Execute(w, subject)
 }
 
-func homeHandler4(w http.ResponseWriter, r *http.Request) {
+func homeHandlerAdmin(w http.ResponseWriter, r *http.Request) {
 	var alltab AdminPage
 	MakeStructAdminPage(alltab)
 	tpl, err := template.ParseFiles(filepath.Join(templateDir, "page/adminPage.html"))
@@ -81,3 +126,4 @@ func homeHandler4(w http.ResponseWriter, r *http.Request) {
 	}
 	tpl.Execute(w, alltab)
 }
+
