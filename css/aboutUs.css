@@ -1,0 +1,19 @@
+/* Dans style.css ou aboutUsPage.css */
+body {
+    background-color: #3e8948; /* Le # est crucial ! */
+    color: #ffffff; /* Texte en blanc pour le contraste */
+    margin: 0;
+}
+
+h1 {
+    font-family: "Press Start 2P", cursive;
+    margin-top: 50px;
+    text-align: center;
+}
+
+p {
+    font-family: "VT323", monospace;
+    font-size: 2rem;
+    text-align: center;
+    margin-top: 20px;
+}
