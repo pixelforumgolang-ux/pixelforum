@@ -6,7 +6,8 @@ import (
 
 type User struct {
 	// user information
-	ID 				uint    	`gorm:"primaryKey;column:id"`
+	ID 				uint    	`gorm:"primaryKey;column:ID"`
+
 	UserName      	string  	`gorm:"column:UserName"`
 	FirstName      	string  	`gorm:"column:firstName"`
 	LastName      	string  	`gorm:"column:lastName"`
@@ -16,7 +17,7 @@ type User struct {
 }
 
 type Post struct {
-	PostId 			uint    	`gorm:"primaryKey;column:PostId"`
+	PostID 			uint    	`gorm:"primaryKey;column:PostID"`
 
 	//user information
 	IdUser 			uint  		`gorm:"column:idUser"`
@@ -26,19 +27,18 @@ type Post struct {
 	PostMessage 	string  	`gorm:"column:PostMessage"`
 	PostImg     	string  	`gorm:"column:PostImg"`
 	PostDate     	time.Time  	`gorm:"column:PostDate"`
+
+	ComID 			*uint		`gorm:"column:ComID"`
+  	CommentaryList  []Commentary `gorm:"foreignkey:ComID"`
 }
 
 
 type Commentary struct {
-	Commentary_id 	uint    	`gorm:"primaryKey;column:id"`
+	ComID 	uint    	`gorm:"primaryKey;column:ComID"`
 
 	//user information
 	UserComId      	uint  		`gorm:"column:UserComId"`
 	User 			User 		`gorm:"foreignKey:UserComId"`
-
-	//Post information
-	PostComId		uint		`gorm:"column:PostComId"`
-	Post 			Post		`gorm:"foreignKey:PostComId"`
 
 	//Commentary information
 	Message     	string  	`gorm:"column:ComMessage"`
