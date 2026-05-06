@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 func mdpCheck(){
 
 }
@@ -13,21 +15,21 @@ func Search(){
 }
 
 func MakeStructPostPage(id uint, subject PostPage){
-	readPost(id,subject.subjectPost)
-	readCommentary(subject.subjectPost.PostCommentary, subject.subjectCommentary)
+	readPost(id,subject.SubjectPost)
+	readCommentary(subject.SubjectPost.PostCommentary, subject.SubjectCommentary)
 }
 
 
 func MakeStructAdminPage(everything AdminPage){
 
-	readUserAll(everything.everyUser)
-	readPostAll(everything.everyPost)
-	readCommentaryAll(everything.everyCommentary)
+	readUserAll(everything.EveryUser)
+	readPostAll(everything.EveryPost)
+	readCommentaryAll(everything.EveryCommentary)
 }
 
 func verifLoginPage(theMail string, theMdp string) bool{
 	var mail User
-	result := db.Where("UserMail = ?", theMail)First(&mail)
+	result := db.Where("UserMail = ?", theMail).First(&mail)
 
 	if (result.Error != nil){
 		fmt.Println("information érroné ou manquante")
@@ -40,6 +42,7 @@ func verifLoginPage(theMail string, theMdp string) bool{
 			return true
 		}
 	}
+	return false
 }
 
 func disconnect(){
