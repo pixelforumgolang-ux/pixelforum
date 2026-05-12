@@ -12,12 +12,16 @@ import (
 
 //CREATE RUD
 
-func createUser(userName string, firstName string, lastName string, userMail string, userMdp string,  ){
+func createUser(userName string, firstName string, lastName string, userMail string, userMdp string){
 	
 	if (userName == "" || userMail == "" || userMdp == "" || lastName == "" || firstName  == "" ){
+
 		fmt.Println("pas de message")
+	
 	} else {
-		user := User{UserName: userName, 
+
+		user := User{
+			UserName: userName, 
 			FirstName : firstName, 
 			LastName : lastName, 
 			UserMail : userMail,   	
@@ -27,116 +31,190 @@ func createUser(userName string, firstName string, lastName string, userMail str
 		result := db.Create(&user)
 
 		if (result.Error != nil) {
-			fmt.Println("erreur")
+			fmt.Println("erreur lors de la création du profile")
 		}
+
+		fmt.Println("Vous pouvez maintenant vous conncter")
 	}
 }
 
-func createPost(theIdUser uint, postMessage string, postImg string, postDate time.Time, list []uint){
+func createPost(userID uint, subject string, message string, image string, time time.Time){
 
-	if (postMessage == ""){
+	if (comMessage == "" || subject == "" ){
+
 		fmt.Println("pas de message")
-	} else {
-		post := Post{		
-				idUser : theIdUser,		
-				PostMessage : postMessage,
-				PostImg : postImg,
-				PostDate : postDate,	
-				PostCommentary : list}
 
-		result := db.Create(&post)
+	} else {
+
+		time = Date.now()
+		DataCom := Post{		
+			UserID		: userID
+			Subject 	: subject,
+			Message 	: message,	
+			Image 		: image,	
+			Date		: time
+		}
+
+		result := db.Create(&DataCom)
 
 		if (result.Error != nil) {
 			fmt.Println("erreur")
 		}
-	}
 
+	}
+}
+
+func createCommentary(userID uint, postID uint, message string, image string){
+
+	if (message == ""){
+
+		fmt.Println("pas de message")
+
+	} else {
+
+		time = Date.now()
+		DataCom := Commentary{		
+			UserID 		: userID,		
+			PostID 		: postID,
+			Message 	: message,
+			Image  		: image,
+			Date 		: time
+		}
+
+		result := db.Create(&DataCom)
+
+		if (result.Error != nil) {
+			fmt.Println("erreur")
+		}
+
+	}
+}
+
+func createSession(userID uint){
 	
+	session := Session{
+		UserID : userID
+		token : true
+	}
+
+	result := db.Create(&session)
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+
 }
 
-func createCommentary(theIdUser uint, comMessage string, comImg string, comDate time.Time){
-	if (comMessage == ""){
-		fmt.Println("pas de message")
-	} else {
-		com := Commentary{		
-			UserComId : theIdUser,		
-			Message : comMessage,
-			Image  : comImg,
-			ComDate : comDate}
-
-		result := db.Create(&com)
-
-		if (result.Error != nil) {
-			fmt.Println("erreur")
-		} else {
-			fmt.Println(result.RowsAffected)
-		}
+func createlikes(comID uint){
+	
+	like := Likes{
+		ComID : comID
+		NbLike : 0
 	}
+
+	result := db.Create(&like)
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+
 }
 
 //C READ UD
 
-func readUser(id uint, theUser User){
-	result := db.First(&theUser, id)
+func readUser(mdp string, theUser *User){
+	result := db.Preload("Post").Preload("Commentary").Where("UserMdp = ?",mdp).First(theUser)
 
 	if ( result.Error != nil){
 		fmt.Println("erreur")
 	}
 }
 
-func readUserAll(theUser []User){
-	result := db.Find(&theUser)
+func readUserAll(users *[]User){
+	result := db.Preload("Post").Preload("Commentary").Find(users)
 
 	if ( result.Error != nil){
 		fmt.Println("erreur")
 	}
 }
 
-func readPost(id uint, thePost Post){
+func readPost(id uint, thePost *Post){
+	result := db.Preload("Commentary").First(thePost, id)
 	
-		result := db.First(&thePost)
-		if ( result.Error != nil){
-			fmt.Println("erreur")
-		}
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
 }
 
-func readPostAll(thePost []Post){
-	result := db.Find(&thePost)
-
-		if ( result.Error != nil){
-			fmt.Println("erreur")
-		}
-}
-
-func readCommentary(idList []uint, CommentaryList []Commentary){
-	if (len(idList) > 0){
-		result := db.First(&CommentaryList, idList)
-
-		if ( result.Error != nil){
-			fmt.Println("erreur")
-		}
-	} 
-}
-
-func readCommentaryAll(CommentaryList []Commentary){
-	
-	result := db.Find(&CommentaryList)
+func readPostAll(thePost *[]Post){
+	result := db.Preload("Commentary").Find(thePost)
 
 	if ( result.Error != nil){
 		fmt.Println("erreur")
-	} 
+	}
 }
+
+func readCommentary(idList []uint, CommentaryList *[]Commentary){
+	result := db.Preload("Post").Preload("User").Find(CommentaryList, "PostID IN ?", idList)
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+}
+
+func readCommentaryAll(CommentaryList *[]Commentary){
+	result := db.Preload("Post").Preload("User").Find(CommentaryList)
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+}
+
+func readLikes(likes *Likes, id uint){
+	result := db.First(likes, id)
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+}
+
+readAllLikes(likes *[]Likes){
+	result := db.Find(likes)
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+}
+
+func readSession(session *Session, id uint){
+	result := db.Where("ComID = ?", id).First(Session)
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+}
+
+readAllSession(session *[]Sessions){
+	result := db.Find(session)
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+}
+
 
 
 //CR UPDATE D
 
 func updateUser(id uint, userName string, firstName string, lastName string, userMail string, userMdp string, userStatus string){
-	dataUser := User{UserName: userName, 
+	dataUser := User{
+			UserName: userName, 
 			FirstName : firstName, 
 			LastName : lastName, 
 			UserMail : userMail,	
 			UserMdp : userMdp,
-			UserStatus : userStatus}
+			UserStatus : userStatus
+		}
 	
 	result := db.Model(User{}).Where("id = ?", id).Updates(dataUser)
 
@@ -145,14 +223,47 @@ func updateUser(id uint, userName string, firstName string, lastName string, use
 	}
 }
 
-func updatePost(id uint, postCommentary []uint){
-	result := db.Model(Post{}).Where("id = ?", id).Updates(Post{PostCommentary : postCommentary})
+func updateLike(comID uint, like int){
+	
+	Likes := Likes{
+		NbLike : like
+	}
+
+	result := db.Model(Likes{}).Where("UserID = ?", comID uint).Updates(&session)
 
 	if ( result.Error != nil){
 		fmt.Println("erreur")
 	}
+
 }
 
+func updateSessionON(userID uint){
+	
+	session := Session{
+		token : true
+	}
+
+	result := db.Model(Session{}).Where("UserID = ?", userID uint).Updates(&session)
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+
+}
+
+func updateSessionOFF(userID uint){
+	
+	session := Session{
+		token : false
+	}
+
+	result := db.Model(Session{}).Where("UserID = ?", userID uint).Updates(&session)
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+
+}
 
 //CRU DELETE
 
@@ -174,6 +285,22 @@ func deletePost(id uint){
 
 func deleteCom(id uint){
 	result := db.Delete(&Commentary{}, id)
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+}
+
+func deleteLikes(id uint){
+	result := db.Where("ComID = ?", id).Delete(&Likes{})
+
+	if ( result.Error != nil){
+		fmt.Println("erreur")
+	}
+}
+
+func deleteSession(id uint){
+	result := db.Where("UserID = ?", id).Delete(&Session{})
 
 	if ( result.Error != nil){
 		fmt.Println("erreur")

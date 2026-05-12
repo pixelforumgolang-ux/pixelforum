@@ -7,41 +7,53 @@ import (
 type User struct {
 	// user information
 	ID 				uint    	`gorm:"primaryKey;column:ID"`
-
 	UserName      	string  	`gorm:"column:UserName"`
 	FirstName      	string  	`gorm:"column:firstName"`
 	LastName      	string  	`gorm:"column:lastName"`
 	UserMail      	string  	`gorm:"column:UserMail"`
 	UserMdp      	string  	`gorm:"column:UserMdp"`
-	UserStatus      string  	`gorm:"column:UserStatus"`
+	UserStatus     	string  	`gorm:"column:UserStatus"`
+
+	Post			[]Post			`gorm:"foreignKey:UserID"` //permet de récupéré facilement via preload(Commentary) tous les Commentary lié a un user
+	Commentary		[]Commentary	`gorm:"foreignKey:UserID"` //permet de récupéré facilement via preload(Post) tous les Post lié a un user
 }
 
-type Post struct {
+type Post struct { 
+	//Post information 
 	PostID 			uint    	`gorm:"primaryKey;column:PostID"`
+	UserID 			uint		`gorm:"column:UserID"` 
+	User   			User		`gorm:"foreignKey:UserID"`
+	Subject 		string		`gorm:"column:Subject"`
+	Message 		string		`gorm:"column:Message"`
+	Image 			string		`gorm:"column:Image"`
+	Date 			time.Time	`gorm:"column:Date"`
 
-	//user information
-	IdUser 			uint  		`gorm:"column:idUser"`
-	User 			User 		`gorm:"foreignKey:idUser"`
-
-	//post information
-	PostMessage 	string  	`gorm:"column:PostMessage"`
-	PostImg     	string  	`gorm:"column:PostImg"`
-	PostDate     	time.Time  	`gorm:"column:PostDate"`
-
-	ComID 			*uint		`gorm:"column:ComID"`
-  	CommentaryList  []Commentary `gorm:"foreignkey:ComID"`
+	Commentary 		[]Commentary	`gorm:"foreignKey:PostID"`  //permet de récupéré facilement via preload(Commentary) tous les Commentary lié a un post
 }
-
 
 type Commentary struct {
-	ComID 	uint    	`gorm:"primaryKey;column:ComID"`
-
-	//user information
-	UserComId      	uint  		`gorm:"column:UserComId"`
-	User 			User 		`gorm:"foreignKey:UserComId"`
-
 	//Commentary information
-	Message     	string  	`gorm:"column:ComMessage"`
-	Image     		string  	`gorm:"column:image"`
-	ComDate     	time.Time  	`gorm:"column:ComDate"`
+	ComID 			uint    	`gorm:"primaryKey;column:ComID"`
+	MessageCom 		string		`gorm:"column:MessageCom"`
+	ImageCom 		string		`gorm:"column:ImageCom"`
+	DateCom 		time.Time	`gorm:"column:DateCom"`
+	PostID 			uint		`gorm:"column:PostID"` //-----------------> association belong to pour récupéré facilement les post
+	Post			Post		`gorm:"foreignKey:PostID"`
+	UserID 			uint		`gorm:"column:UserID"` //-----------------> association belong to pour récupéré facilement les user
+	User			User		`gorm:"foreignKey:UserID"`
 }
+
+type Likes struct {
+	//like by Commentary / association "belong to"
+	ComID 			uint		`gorm:"column:ComID"` //-----------------> association belong to pour récupéré facilement les Commentary
+	Commentary		Commentary	`gorm:"foreignKey:ComID"`
+	NbLike 			int			`gorm:"column:nbLike"`
+}
+
+type Session struct {
+	//Session information / association "belong to"
+	UserID 			uint		`gorm:"column:UserID"`
+	User   			User		`gorm:"foreignKey:UserID"`
+	Token 			int 		`gorm:"column:Token"`
+}
+
